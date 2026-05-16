@@ -18,6 +18,10 @@ import { fnValidateInput } from "../lib/fnValidateInput";
 
 const app = express();
 
+app.get("/", (_req: Request, res: Response) => {
+  res.redirect("/api/planets");
+});
+
 // 設定計算 Flag
 const FLAG: number = sweph.constants.SEFLG_SWIEPH | sweph.constants.SEFLG_SPEED;
 
