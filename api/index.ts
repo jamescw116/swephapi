@@ -134,6 +134,7 @@ const inputToStr = (input: Input): string => {
 };
 
 // Test URL: http://localhost:3000/api/planets?y=1985&m=11&d=6&h=17&i=54&s=0&tz=8&lngD=114&lngM=6&latD=22&latM=12&hse=P&fmt=sign
+// Prod URL: https://swephapi.vercel.app/api/planets?y=1985&m=11&d=6&h=17&i=54&s=0&tz=8&lngD=114&lngM=6&latD=22&latM=12&hse=P&fmt=sign
 app.get("/api/planets", (req: Request, res: Response) => {
   try {
     const input: Input = {
