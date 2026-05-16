@@ -59,16 +59,19 @@ GET https://swephapi.vercel.app/api/planets?y=1985&m=11&d=6&h=17&i=54&s=0&tz=8&l
 ### 回傳格式
 ```json
 {
-	"input": "1985-11-06 17:54:00 (UTC+8.0)114°E06' 22°N12' House System: P",
-	"julianDay": 2446364.2444444443,
+	"input": "1985-11-06 17:54:00 (UTC+8.0) 114°E06' 22°N12' House System: P",
 	"planets": {
-		"sun": { "pos": { "z": "Scorpio", "d": 14, "m": 2, "s": 3 }, "montion": 1 },
-		"moon": { "pos": { "z": "Pisces", "d": 2, "m": 12, "s": 7 }, "montion": -1 },
+		"sun": { "deg": { "z": "Scorpio", "d": 14, "m": 2, "s": 3 }, "motion": 1 },
+		"moon": { "deg": { "z": "Pisces", "d": 2, "m": 12, "s": 7 }, "motion": -1 },
 		...
 	},
 	"houses": [ { "z": "Gemini", "d": 29, "m": 12, "s": 0 }, ... ]
 }
 ```
+
+備註：
+- `fmt=sign` 時，`input` 會是格式化字串，`planets[*].deg` 與 `houses[*]` 會是星座分度物件。
+- `fmt=raw`（預設）時，`input` 會是輸入參數物件，`planets[*].deg` 與 `houses[*]` 會是浮點度數。
 
 ## 參考
 - [Swiss Ephemeris 官方網站](https://www.astro.com/swisseph/)
