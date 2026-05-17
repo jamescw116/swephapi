@@ -28,39 +28,37 @@ export const PlanetList = [
   "neptune",
   "pluto",
 
-  "northNode", // 北交點
-
   "ceres", // 穀神星
   "pallas", // 智神星
   "juno", // 婚神星
   "vesta", // 灶神星
-
   "chiron", // 凱龍星
+
+  "northNode", // 北交點
   "lilith", // 黑月莉莉絲
 ] as const;
-export type Planet = (typeof PlanetList)[number];
 export type PlanetName = (typeof PlanetList)[number];
+
 export const PlanetIDs: { [key in PlanetName]: number } = {
   sun: sweph.constants.SE_SUN,
   moon: sweph.constants.SE_MOON,
-  mars: sweph.constants.SE_MARS,
   mercury: sweph.constants.SE_MERCURY,
   venus: sweph.constants.SE_VENUS,
+  mars: sweph.constants.SE_MARS,
   jupiter: sweph.constants.SE_JUPITER,
   saturn: sweph.constants.SE_SATURN,
   uranus: sweph.constants.SE_URANUS,
   neptune: sweph.constants.SE_NEPTUNE,
   pluto: sweph.constants.SE_PLUTO,
 
-  northNode: sweph.constants.SE_TRUE_NODE,
+  ceres: sweph.constants.SE_CERES, // 穀神星
+  pallas: sweph.constants.SE_PALLAS, // 智神星
+  juno: sweph.constants.SE_JUNO, // 婚神星
+  vesta: sweph.constants.SE_VESTA, // 灶神星
+  chiron: sweph.constants.SE_CHIRON, // 凱龍星
 
-  ceres: sweph.constants.SE_CERES,
-  pallas: sweph.constants.SE_PALLAS,
-  juno: sweph.constants.SE_JUNO,
-  vesta: sweph.constants.SE_VESTA,
-
-  chiron: sweph.constants.SE_CHIRON,
-  lilith: sweph.constants.SE_MEAN_APOG,
+  northNode: sweph.constants.SE_TRUE_NODE, // 北交點
+  lilith: sweph.constants.SE_MEAN_APOG, // 黑月莉莉絲（平均交點）
 };
 
 export const FixStarList = [
