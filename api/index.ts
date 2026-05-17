@@ -8,14 +8,16 @@ import type {
   Input,
   Planet,
   Planets,
+  ZodiacDegree,
 } from "../lib/_types";
 
-import { ErrorUsage, PlanetIDs } from "../lib/_consts";
+import { ErrorUsage, FixStarList, PlanetIDs, ZodiacName } from "../lib/_consts";
 
 import { fnDegToZodiacDegree } from "../lib/fnDegToZodiacDegree";
 import { fnInputToStr } from "../lib/fnInputToStr";
 import { fnParseQuery } from "../lib/fnParseQuery";
 import { fnValidateInput } from "../lib/fnValidateInput";
+import { fnToFixDp } from "../lib/fnToFixDp";
 
 const app = express();
 
@@ -73,6 +75,8 @@ app.get("/api/planets", (req: Request, res: Response) => {
       return res.status(400).json(error);
     }
 
+    sweph.set_ephe_path(__dirname + "/../sweph");
+
     // 1. 計算 Julian Day
     const jd: number = sweph.julday(
       input.y,
@@ -89,17 +93,20 @@ app.get("/api/planets", (req: Request, res: Response) => {
 
     // 3. 循環計算位置
     for (const [planet, id] of Object.entries(PlanetIDs)) {
-      const deg = sweph.calc_ut(jd, id, FLAG);
+      const result = sweph.calc_ut(jd, id, FLAG);
+      const deg = fnToFixDp(result.data[0]);
       results[planet] = {
-        d: input.fmt === "raw" ? deg.data[0] : fnDegToZodiacDegree(deg.data[0]), // longitude
+        d: input.fmt === "raw" ? deg : fnDegToZodiacDegree(deg), // longitude
         //deg.data[1], // latitude
         //deg.data[2] // distance,
-        m: deg.data[3] > 0 ? 1 : deg.data[3] < 0 ? -1 : 0, // motion
+        m: result.data[3] > 0 ? 1 : result.data[3] < 0 ? -1 : 0, // motion
       };
     }
 
+    sweph.fixstar;
+
     const responseData: ApiResponse = {
-      ...(input.fmt === "raw" ? { input: fnInputToStr(input) } : {}),
+      ...(input.fmt === "sign" ? { input: fnInputToStr(input) } : {}),
       planets: results as Planets,
       houses: sweph
         .houses(
@@ -108,9 +115,21 @@ app.get("/api/planets", (req: Request, res: Response) => {
           input.lngD + input.lngM / 60.0,
           input.hse,
         )
-        .data.houses.map((h: number) =>
-          input.fmt === "raw" ? h : fnDegToZodiacDegree(h),
-        ),
+        .data.houses.map((h: number) => {
+          const deg = fnToFixDp(h);
+          return input.fmt === "raw" ? deg : fnDegToZodiacDegree(deg);
+        }),
+      fixStars: FixStarList.map((star: string) => {
+        sweph.constants.SE_FIXSTAR;
+        const result = sweph.fixstar2_ut(star, jd, FLAG);
+        const deg = fnToFixDp(result.data[0]);
+        return {
+          [star]: input.fmt === "raw" ? deg : fnDegToZodiacDegree(deg),
+        };
+      }).reduce((acc, curr) => ({ ...acc, ...curr }), {}) as Record<
+        ZodiacName,
+        number | ZodiacDegree
+      >,
     };
 
     res.json(responseData);

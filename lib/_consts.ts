@@ -27,6 +27,16 @@ export const PlanetList = [
   "uranus",
   "neptune",
   "pluto",
+
+  "northNode", // 北交點
+
+  "ceres", // 穀神星
+  "pallas", // 智神星
+  "juno", // 婚神星
+  "vesta", // 灶神星
+
+  "chiron", // 凱龍星
+  "lilith", // 黑月莉莉絲
 ] as const;
 export type Planet = (typeof PlanetList)[number];
 export type PlanetName = (typeof PlanetList)[number];
@@ -41,7 +51,30 @@ export const PlanetIDs: { [key in PlanetName]: number } = {
   uranus: sweph.constants.SE_URANUS,
   neptune: sweph.constants.SE_NEPTUNE,
   pluto: sweph.constants.SE_PLUTO,
+
+  northNode: sweph.constants.SE_TRUE_NODE,
+
+  ceres: sweph.constants.SE_CERES,
+  pallas: sweph.constants.SE_PALLAS,
+  juno: sweph.constants.SE_JUNO,
+  vesta: sweph.constants.SE_VESTA,
+
+  chiron: sweph.constants.SE_CHIRON,
+  lilith: sweph.constants.SE_MEAN_APOG,
 };
+
+export const FixStarList = [
+  "Regulus", // 軒轅十四
+  "Aldebaran", // 畢宿五
+  "Antares", // 心宿二
+  "Fomalhaut", // 北落師門 / 南魚座α
+  "Algol", // 大陵五
+
+  "Sirius", // 天狼星
+  "Arcturus", // 大角星
+  "Vega", // 織女星
+] as const;
+export type FixStarName = (typeof FixStarList)[number];
 
 export const HouseSystemList = [
   "P", // Placidus

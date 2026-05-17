@@ -40,6 +40,7 @@ export type ApiResponse = {
   input?: string | Input | undefined;
   planets: Planets;
   houses: (number | ZodiacDegree)[];
+  fixStars: Record<ZodiacName, number | ZodiacDegree>;
 };
 
 export type ApiErrorResponse = {
