@@ -30,16 +30,16 @@ export type ZodiacDegree = {
 };
 
 export type Planet = {
-  deg: number | ZodiacDegree;
-  motion: number | PlanetMotion; // 1: 順行, 0: 駐留, -1: 逆行
+  d: number | ZodiacDegree;
+  m: number | PlanetMotion; // 1: 順行, 0: 駐留, -1: 逆行
 };
 
 export type Planets = Record<PlanetName, Planet>;
 
 export type ApiResponse = {
-  input: string | Input;
+  input?: string | Input | undefined;
   planets: Planets;
-  houses?: (number | ZodiacDegree)[];
+  houses: (number | ZodiacDegree)[];
 };
 
 export type ApiErrorResponse = {

@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import sweph from "sweph";
 
 import type {
@@ -17,6 +18,31 @@ import { fnParseQuery } from "../lib/fnParseQuery";
 import { fnValidateInput } from "../lib/fnValidateInput";
 
 const app = express();
+
+const originsEnv = process.env.ALLOWED_ORIGINS;
+const allowedOrigins = originsEnv
+  ? originsEnv.split(",")
+  : ["http://localhost:3000"];
+
+// 2. 設定 CORS 動態檢查
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // 如果沒有 origin (例如 Postman、或者是同網域請求)，直接放行
+      if (!origin) return callback(null, true);
+
+      // 檢查發送請求的網域（origin）是否在我們允許的清單內
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        allowedOrigins.includes("*")
+      ) {
+        callback(null, true); // 在清單內，放行！
+      } else {
+        callback(new Error("CORS Policy: 此網域不允許存取該 API。")); // 阻截！
+      }
+    },
+  }),
+);
 
 app.get("/", (_req: Request, res: Response) => {
   res.redirect("/api/planets");
@@ -65,16 +91,15 @@ app.get("/api/planets", (req: Request, res: Response) => {
     for (const [planet, id] of Object.entries(PlanetIDs)) {
       const deg = sweph.calc_ut(jd, id, FLAG);
       results[planet] = {
-        deg:
-          input.fmt === "raw" ? deg.data[0] : fnDegToZodiacDegree(deg.data[0]), // longitude
+        d: input.fmt === "raw" ? deg.data[0] : fnDegToZodiacDegree(deg.data[0]), // longitude
         //deg.data[1], // latitude
         //deg.data[2] // distance,
-        motion: deg.data[3] > 0 ? 1 : deg.data[3] < 0 ? -1 : 0, // motion
+        m: deg.data[3] > 0 ? 1 : deg.data[3] < 0 ? -1 : 0, // motion
       };
     }
 
     const responseData: ApiResponse = {
-      input: input.fmt === "raw" ? input : fnInputToStr(input),
+      ...(input.fmt === "raw" ? { input: fnInputToStr(input) } : {}),
       planets: results as Planets,
       houses: sweph
         .houses(
