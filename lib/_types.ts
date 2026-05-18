@@ -37,10 +37,10 @@ export type Planet = {
 export type Planets = Record<PlanetName, Planet>;
 
 export type ApiResponse = {
-  input?: string | Input | undefined;
-  planets: Planets;
-  houses: (number | ZodiacDegree)[];
-  fixStars: Record<ZodiacName, number | ZodiacDegree>;
+  i?: string | Input | undefined;
+  p: Planets;
+  h: (number | ZodiacDegree)[];
+  fs: Record<ZodiacName, number | ZodiacDegree>;
 };
 
 export type ApiErrorResponse = {

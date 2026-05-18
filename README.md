@@ -27,8 +27,8 @@ npm run dev
 ### 路徑
 `GET /api/planets`
 
-### 參數
-| 參數   | 說明         | 型別 | 範例 | 必填 | 備註 |
+### 輸入參數
+| 參數   | 說明         | 類型 | 範例 | 必填 | 備註 |
 |--------|--------------|------|------|------|------|
 | y      | 年           | int  | 1985 | ✔️   |      |
 | m      | 月           | int  | 11   | ✔️   | 1~12 |
@@ -37,13 +37,40 @@ npm run dev
 | i      | 分鐘         | int  | 54   | ✔️   | 0~59 |
 | s      | 秒           | int  | 0    | ✔️   | 0~59 |
 | tz     | 時區         | float| 8    | ✔️   | 香港+8，倫敦0 |
-| lngD   | 經度度       | int  | 114  | ✔️   | -180~180，東+西- |
-| lngM   | 經度分       | int  | 6    | ✔️   | 0~59 |
-| latD   | 緯度度       | int  | 22   | ✔️   | -90~90，北+南- |
-| latM   | 緯度分       | int  | 12   | ✔️   | 0~59 |
-| hse    | 宮位系統     | str  | P    | ✔️   | P:Placidus, K:Koch, O:Porphyry, R:Regiomontanus, C:Campanus, A:Equal, E:Equal(Alt), W:Whole Sign |
-| fmt    | 回傳格式     | str  | sign | ✖️   | raw:原始度數, sign:星座分度，預設raw |
+| lngD   | 經度度數       | int  | 114  | ✔️   | -180~180，東+西- |
+| lngM   | 經度分數       | int  | 0    | ✔️   | 0~59 |
+| latD   | 緯度度數       | int  | 22   | ✔️   | -90~90，北+南- |
+| latM   | 緯度分數       | int  | 0    | ✔️   | 0~59 |
+| hse    | 宮位系統       | char | P    | ✔️   | P: Placidus, K: Koch 等 |
+| fmt    | 返回格式       | char | raw  |    | raw: 原始度數, sign: 星座分度 |
 
+### 返回格式
+
+#### 成功響應
+```json
+{
+  "i": "1985-11-06 17:54:00 +8", // 可選，當 fmt 為 sign 時返回
+  "p": {
+    "Sun": { "d": { "z": "Scorpio", "d": 14, "m": 23, "s": 45 }, "m": 1 },
+    "Moon": { "d": { "z": "Taurus", "d": 27, "m": 12, "s": 30 }, "m": -1 }
+  },
+  "h": [
+    { "z": "Aries", "d": 0, "m": 0, "s": 0 },
+    { "z": "Taurus", "d": 30, "m": 0, "s": 0 }
+  ],
+  "fs": {
+    "Aldebaran": { "z": "Taurus", "d": 9, "m": 47, "s": 0 }
+  }
+}
+```
+
+#### 錯誤響應
+```json
+{
+  "error": "請提供必要參數，以下為 API 使用說明：",
+  "usage": "...ErrorUsage 的內容..."
+}
+```
 
 ### 範例
 #### 本地測試
@@ -55,23 +82,6 @@ GET http://localhost:3000/api/planets?y=1985&m=11&d=6&h=17&i=54&s=0&tz=8&lngD=11
 ```
 GET https://swephapi.vercel.app/api/planets?y=1985&m=11&d=6&h=17&i=54&s=0&tz=8&lngD=114&lngM=6&latD=22&latM=12&hse=P&fmt=sign
 ```
-
-### 回傳格式
-```json
-{
-	"input": "1985-11-06 17:54:00 (UTC+8.0) 114°E06' 22°N12' House System: P",
-	"planets": {
-		"sun": { "deg": { "z": "Scorpio", "d": 14, "m": 2, "s": 3 }, "motion": 1 },
-		"moon": { "deg": { "z": "Pisces", "d": 2, "m": 12, "s": 7 }, "motion": -1 },
-		...
-	},
-	"houses": [ { "z": "Gemini", "d": 29, "m": 12, "s": 0 }, ... ]
-}
-```
-
-備註：
-- `fmt=sign` 時，`input` 會是格式化字串，`planets[*].deg` 與 `houses[*]` 會是星座分度物件。
-- `fmt=raw`（預設）時，`input` 會是輸入參數物件，`planets[*].deg` 與 `houses[*]` 會是浮點度數。
 
 ## 參考
 - [Swiss Ephemeris 官方網站](https://www.astro.com/swisseph/)
